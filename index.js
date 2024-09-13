@@ -75,7 +75,7 @@ const metasRealizadas = async () =>{
 
 }
 
-const metasAbertas= async() =>{
+const metasAbertas = async() =>{
     const abertas = metas.filter((m)=>{
         return metas.checked != true
     })
@@ -90,6 +90,33 @@ const metasAbertas= async() =>{
         message: " Metas Abertas " + abertas.length,
         choices:[...abertas]
     })
+}
+
+const metasDeletadas = async() =>{
+
+    const metasDesmarcadas = metas.map((metas)=>{
+        return {value: meta.value, checked: false}
+    })
+
+    const itemsAdeletar = await checkbox({
+        message: "Selecione qual item quer deletar ",
+        choices: [...metasDesmarcadas],
+        instructions: false
+    })
+
+    if(itemsAdeletar.length == 0){
+        console.log("Nenhum item para deletar")
+        return
+    }
+
+    itemsAdeletar.forEach((item)=>{
+
+        metas= metas.filter((meta)=>{
+            return meta.value != item
+        })
+    })
+
+    console.log("Meta(s) deletada(s) com sucesso")
 }
 
 const start = async() =>{
@@ -107,22 +134,27 @@ const start = async() =>{
 
                 {
                     name: "Listar metas",
-                    value:"listar"
+                    value: "listar"
                 },
 
                 {
                     name: "Metas Realizadas",
-                    value:"realizadas"
+                    value: "realizadas"
                 },
 
                 {
                     name: "Metas Abertas",
-                    value:"abertas"
+                    value: "abertas"
+                },
+
+                {
+                    name: "Metas Deletadas",
+                    value: "deletar"
                 },
 
                 {
                     name: "Sair",
-                    value:"sair"
+                    value: "sair"
                 }
             ]
         })
@@ -146,7 +178,11 @@ const start = async() =>{
             case 'abertas':
                 await metasAbertas()
                 break
-
+            
+            case 'deletar':
+                await metasDeletadas()
+                break
+                
             case 'sair':
                 return
         }
